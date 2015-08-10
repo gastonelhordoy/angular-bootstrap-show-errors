@@ -5,7 +5,7 @@ describe 'showErrors', ->
   validName = 'Paul'
   invalidName = 'Pa'
 
-  beforeEach module('ui.bootstrap.showErrors')
+  beforeEach module('res.showErrors')
   beforeEach inject((_$compile_, _$rootScope_, _$timeout_) ->
     $compile = _$compile_
     $scope = _$rootScope_
@@ -15,10 +15,10 @@ describe 'showErrors', ->
   compileEl = ->
     el = $compile(
         '<form name="userForm">
-          <div id="first-name-group" class="form-group" show-errors>
+          <div id="first-name-group" class="form-group" res-show-errors>
             <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />
           </div>
-          <div id="last-name-group" class="form-group" show-errors="{ showSuccess: true }">
+          <div id="last-name-group" class="form-group" res-show-errors="{ showSuccess: true }">
             <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" class="form-control" />
           </div>
         </form>'
@@ -30,27 +30,27 @@ describe 'showErrors', ->
   describe 'directive does not contain an input element with a form-control class and name attribute', ->
     it 'throws an exception', ->
       expect( ->
-        $compile('<form name="userForm"><div class="form-group" show-errors><input type="text" name="firstName"></input></div></form>')($scope)
+        $compile('<form name="userFor"><div class="form-group" res-show-errors><input type="text" name="firstName"></input></div></form>')($scope)
       ).toThrow "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class"
 
   it "throws an exception if the element doesn't have the form-group or input-group class", ->
     expect( ->
-      $compile('<div show-errors></div>')($scope)
+      $compile('<div res-show-errors></div>')($scope)
     ).toThrow "show-errors element does not have the 'form-group' or 'input-group' class"
 
   it "doesn't throw an exception if the element has the input-group class", ->
     expect( ->
-      $compile('<form name="userForm"><div class="input-group" show-errors><input class="form-control" type="text" name="firstName"></input></div></form>')($scope)
+      $compile('<form name="userForm"><div class="input-group" res-show-errors><input class="form-control" type="text" name="firstName"></input></div></form>')($scope)
     ).not.toThrow()
 
   it "doesn't throw an exception if the element doesn't have the form-group class but uses the skipFormGroupCheck option", ->
     expect( ->
-      $compile('<form name="userForm"><div show-errors="{ skipFormGroupCheck: true }"><input class="form-control" type="text" name="firstName"></input></div></form>')($scope)
+      $compile('<form name="userForm"><div res-show-errors="{ skipFormGroupCheck: true }"><input class="form-control" type="text" name="firstName"></input></div></form>')($scope)
     ).not.toThrow()
 
   it "throws an exception if the element isn't in a form tag", ->
     expect( ->
-      $compile('<div class="form-group" show-errors><input type="text" name="firstName"></input></div>')($scope)
+      $compile('<div class="form-group" res-show-errors><input type="text" name="firstName"></input></div>')($scope)
     ).toThrow()
 
   describe '$pristine && $invalid', ->
@@ -133,7 +133,7 @@ describe 'showErrors', ->
       $scope.userForm.firstName.$setViewValue invalidName
       $scope.$broadcast 'show-errors-check-validity'
       expectFormGroupHasErrorClass(el).toBe true
-      
+
   describe 'showErrorsCheckValidity is called twice', ->
     it 'correctly applies the has-error class', ->
       el = compileEl()
@@ -236,11 +236,11 @@ describe 'showErrorsConfig', ->
 
   beforeEach ->
     testModule = angular.module 'testModule', []
-    testModule.config (showErrorsConfigProvider) ->
-      showErrorsConfigProvider.showSuccess true
-      showErrorsConfigProvider.trigger 'keypress'
+    testModule.config (resShowErrorsConfigProvider) ->
+      resShowErrorsConfigProvider.showSuccess true
+      resShowErrorsConfigProvider.trigger 'keypress'
 
-    module 'ui.bootstrap.showErrors', 'testModule'
+    module 'res.showErrors', 'testModule'
 
     inject((_$compile_, _$rootScope_, _$timeout_) ->
       $compile = _$compile_
@@ -251,10 +251,10 @@ describe 'showErrorsConfig', ->
   compileEl = ->
     el = $compile(
         '<form name="userForm">
-          <div id="first-name-group" class="form-group" show-errors="{showSuccess: false, trigger: \'blur\'}">
+          <div id="first-name-group" class="form-group" res-show-errors="{showSuccess: false, trigger: \'blur\'}">
             <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />
           </div>
-          <div id="last-name-group" class="form-group" show-errors>
+          <div id="last-name-group" class="form-group" res-show-errors>
             <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" class="form-control" />
           </div>
         </form>'

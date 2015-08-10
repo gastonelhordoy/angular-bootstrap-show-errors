@@ -8,7 +8,7 @@
     $timeout = void 0;
     validName = 'Paul';
     invalidName = 'Pa';
-    beforeEach(module('ui.bootstrap.showErrors'));
+    beforeEach(module('res.showErrors'));
     beforeEach(inject(function(_$compile_, _$rootScope_, _$timeout_) {
       $compile = _$compile_;
       $scope = _$rootScope_;
@@ -17,10 +17,10 @@
     compileEl = function() {
       var el;
       el = $compile('<form name="userForm">\
-          <div id="first-name-group" class="form-group" show-errors>\
+          <div id="first-name-group" class="form-group" res-show-errors>\
             <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />\
           </div>\
-          <div id="last-name-group" class="form-group" show-errors="{ showSuccess: true }">\
+          <div id="last-name-group" class="form-group" res-show-errors="{ showSuccess: true }">\
             <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" class="form-control" />\
           </div>\
         </form>')($scope);
@@ -31,28 +31,28 @@
     describe('directive does not contain an input element with a form-control class and name attribute', function() {
       return it('throws an exception', function() {
         return expect(function() {
-          return $compile('<form name="userForm"><div class="form-group" show-errors><input type="text" name="firstName"></input></div></form>')($scope);
+          return $compile('<form name="userFor"><div class="form-group" res-show-errors><input type="text" name="firstName"></input></div></form>')($scope);
         }).toThrow("show-errors element has no child input elements with a 'name' attribute and a 'form-control' class");
       });
     });
     it("throws an exception if the element doesn't have the form-group or input-group class", function() {
       return expect(function() {
-        return $compile('<div show-errors></div>')($scope);
+        return $compile('<div res-show-errors></div>')($scope);
       }).toThrow("show-errors element does not have the 'form-group' or 'input-group' class");
     });
     it("doesn't throw an exception if the element has the input-group class", function() {
       return expect(function() {
-        return $compile('<form name="userForm"><div class="input-group" show-errors><input class="form-control" type="text" name="firstName"></input></div></form>')($scope);
+        return $compile('<form name="userForm"><div class="input-group" res-show-errors><input class="form-control" type="text" name="firstName"></input></div></form>')($scope);
       }).not.toThrow();
     });
     it("doesn't throw an exception if the element doesn't have the form-group class but uses the skipFormGroupCheck option", function() {
       return expect(function() {
-        return $compile('<form name="userForm"><div show-errors="{ skipFormGroupCheck: true }"><input class="form-control" type="text" name="firstName"></input></div></form>')($scope);
+        return $compile('<form name="userForm"><div res-show-errors="{ skipFormGroupCheck: true }"><input class="form-control" type="text" name="firstName"></input></div></form>')($scope);
       }).not.toThrow();
     });
     it("throws an exception if the element isn't in a form tag", function() {
       return expect(function() {
-        return $compile('<div class="form-group" show-errors><input type="text" name="firstName"></input></div>')($scope);
+        return $compile('<div class="form-group" res-show-errors><input type="text" name="firstName"></input></div>')($scope);
       }).toThrow();
     });
     describe('$pristine && $invalid', function() {
@@ -289,11 +289,11 @@
     beforeEach(function() {
       var testModule;
       testModule = angular.module('testModule', []);
-      testModule.config(function(showErrorsConfigProvider) {
-        showErrorsConfigProvider.showSuccess(true);
-        return showErrorsConfigProvider.trigger('keypress');
+      testModule.config(function(resShowErrorsConfigProvider) {
+        resShowErrorsConfigProvider.showSuccess(true);
+        return resShowErrorsConfigProvider.trigger('keypress');
       });
-      module('ui.bootstrap.showErrors', 'testModule');
+      module('res.showErrors', 'testModule');
       return inject(function(_$compile_, _$rootScope_, _$timeout_) {
         $compile = _$compile_;
         $scope = _$rootScope_;
@@ -303,10 +303,10 @@
     compileEl = function() {
       var el;
       el = $compile('<form name="userForm">\
-          <div id="first-name-group" class="form-group" show-errors="{showSuccess: false, trigger: \'blur\'}">\
+          <div id="first-name-group" class="form-group" res-show-errors="{showSuccess: false, trigger: \'blur\'}">\
             <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />\
           </div>\
-          <div id="last-name-group" class="form-group" show-errors>\
+          <div id="last-name-group" class="form-group" res-show-errors>\
             <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" class="form-control" />\
           </div>\
         </form>')($scope);

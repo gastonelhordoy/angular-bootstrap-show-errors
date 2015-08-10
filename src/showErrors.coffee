@@ -1,16 +1,16 @@
-showErrorsModule = angular.module('ui.bootstrap.showErrors', [])
+showErrorsModule = angular.module('res.showErrors', [])
 
-showErrorsModule.directive 'showErrors',
-['$timeout', 'showErrorsConfig', '$interpolate', ($timeout, showErrorsConfig, $interpolate) ->
-    
+showErrorsModule.directive 'resShowErrors',
+['$timeout', 'resShowErrorsConfig', '$interpolate', ($timeout, resShowErrorsConfig, $interpolate) ->
+
     getTrigger = (options) ->
-      trigger = showErrorsConfig.trigger
+      trigger = resShowErrorsConfig.trigger
       if options && options.trigger?
         trigger = options.trigger
       trigger
-    
+
     getShowSuccess = (options) ->
-      showSuccess = showErrorsConfig.showSuccess
+      showSuccess = resShowErrorsConfig.showSuccess
       if options && options.showSuccess?
         showSuccess = options.showSuccess
       showSuccess
@@ -57,25 +57,35 @@ showErrorsModule.directive 'showErrors',
       restrict: 'A'
       require: '^form'
       compile: (elem, attrs) ->
-        if attrs['showErrors'].indexOf('skipFormGroupCheck') == -1
+        if attrs['resShowErrors'].indexOf('skipFormGroupCheck') == -1
           unless elem.hasClass('form-group') or elem.hasClass('input-group')
             throw "show-errors element does not have the 'form-group' or 'input-group' class"
         linkFn
     }
 ]
 
-showErrorsModule.provider 'showErrorsConfig', ->
+showErrorsModule.provider 'resShowErrorsConfig', ->
   _showSuccess = false
   _trigger = 'blur'
+  _errorClass = 'has-error'
+  _skipFormGroupCheck = false
 
   @showSuccess = (showSuccess) ->
     _showSuccess = showSuccess
-    
+
   @trigger = (trigger) ->
     _trigger = trigger
+
+  @errorClass = (errorClass) ->
+    _errorClass = errorClass
+
+  @skipFormGroupCheck = (skipFormGroupCheck) ->
+    _skipFormGroupCheck = skipFormGroupCheck
 
   @$get = ->
     showSuccess: _showSuccess
     trigger: _trigger
+    skipFormGroupCheck: _skipFormGroupCheck
+    errorClass: _errorClass
 
   return

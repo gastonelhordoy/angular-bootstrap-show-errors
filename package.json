@@ -20,6 +20,7 @@
     "karma-jasmine": "~0.1.5"
   },
   "scripts": {
-    "test": "grunt --verbose"
+    "test": "grunt --verbose",
+    "watch": "grunt karma:continuous:start watch"
   }
 }

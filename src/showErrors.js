@@ -1,14 +1,14 @@
 (function() {
   var showErrorsModule;
 
-  showErrorsModule = angular.module('ui.bootstrap.showErrors', []);
+  showErrorsModule = angular.module('res.showErrors', []);
 
-  showErrorsModule.directive('showErrors', [
-    '$timeout', 'showErrorsConfig', '$interpolate', function($timeout, showErrorsConfig, $interpolate) {
+  showErrorsModule.directive('resShowErrors', [
+    '$timeout', 'resShowErrorsConfig', '$interpolate', function($timeout, resShowErrorsConfig, $interpolate) {
       var getShowSuccess, getTrigger, linkFn;
       getTrigger = function(options) {
         var trigger;
-        trigger = showErrorsConfig.trigger;
+        trigger = resShowErrorsConfig.trigger;
         if (options && (options.trigger != null)) {
           trigger = options.trigger;
         }
@@ -16,7 +16,7 @@
       };
       getShowSuccess = function(options) {
         var showSuccess;
-        showSuccess = showErrorsConfig.showSuccess;
+        showSuccess = resShowErrorsConfig.showSuccess;
         if (options && (options.showSuccess != null)) {
           showSuccess = options.showSuccess;
         }
@@ -67,7 +67,7 @@
         restrict: 'A',
         require: '^form',
         compile: function(elem, attrs) {
-          if (attrs['showErrors'].indexOf('skipFormGroupCheck') === -1) {
+          if (attrs['resShowErrors'].indexOf('skipFormGroupCheck') === -1) {
             if (!(elem.hasClass('form-group') || elem.hasClass('input-group'))) {
               throw "show-errors element does not have the 'form-group' or 'input-group' class";
             }
@@ -78,20 +78,30 @@
     }
   ]);
 
-  showErrorsModule.provider('showErrorsConfig', function() {
-    var _showSuccess, _trigger;
+  showErrorsModule.provider('resShowErrorsConfig', function() {
+    var _errorClass, _showSuccess, _skipFormGroupCheck, _trigger;
     _showSuccess = false;
     _trigger = 'blur';
+    _errorClass = 'has-error';
+    _skipFormGroupCheck = false;
     this.showSuccess = function(showSuccess) {
       return _showSuccess = showSuccess;
     };
     this.trigger = function(trigger) {
       return _trigger = trigger;
     };
+    this.errorClass = function(errorClass) {
+      return _errorClass = errorClass;
+    };
+    this.skipFormGroupCheck = function(skipFormGroupCheck) {
+      return _skipFormGroupCheck = skipFormGroupCheck;
+    };
     this.$get = function() {
       return {
         showSuccess: _showSuccess,
-        trigger: _trigger
+        trigger: _trigger,
+        skipFormGroupCheck: _skipFormGroupCheck,
+        errorClass: _errorClass
       };
     };
   });
