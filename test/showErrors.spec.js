@@ -35,6 +35,11 @@
         }).toThrow("show-errors element has no child input elements with a 'name' attribute and a 'form-control' class");
       });
     });
+    it('directive can find \'form-control\' in nested divs', function() {
+      return expect(function() {
+        return $compile('<form name="userFor"><div class="form-group" res-show-errors><div class="wrapper-container"><input type="text" class="form-control" name="firstName"></input></div></div></form>')($scope);
+      }).not.toThrow;
+    });
     it("throws an exception if the element doesn't have the form-group or input-group class", function() {
       return expect(function() {
         return $compile('<div res-show-errors></div>')($scope);
@@ -274,6 +279,68 @@
           $scope.$broadcast('show-errors-reset');
           $timeout.flush();
           return expectLastNameFormGroupHasSuccessClass(el).toBe(false);
+        });
+      });
+    });
+  });
+
+  describe('showErrorsConfig with alternate form control class', function() {
+    var $compile, $scope, $timeout, compileEl, invalidName, validName;
+    $compile = void 0;
+    $scope = void 0;
+    $timeout = void 0;
+    validName = 'Paul';
+    invalidName = 'Pa';
+    beforeEach(function() {
+      var testModule;
+      testModule = angular.module('testModule', []);
+      testModule.config(function(resShowErrorsConfigProvider) {
+        return resShowErrorsConfigProvider.formControlClass('prj-form-control');
+      });
+      module('res.showErrors', 'testModule');
+      return inject(function(_$compile_, _$rootScope_, _$timeout_) {
+        $compile = _$compile_;
+        $scope = _$rootScope_;
+        return $timeout = _$timeout_;
+      });
+    });
+    compileEl = function() {
+      var el;
+      el = $compile('<form name="userForm">\
+          <div id="first-name-group" class="form-group" res-show-errors="{formControlClass: \'blah\'}">\
+            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />\
+          </div>\
+          <div id="last-name-group" class="form-group" res-show-errors>\
+            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" class="form-control" />\
+          </div>\
+        </form>')($scope);
+      angular.element(document.body).append(el);
+      $scope.$digest();
+      return el;
+    };
+    return describe('when resShowErrorsConfig.formControlClass is set', function() {
+      describe('and no options are given', function() {
+        it('should not throw error', function() {
+          return expect(function() {
+            return $compile('<form name="userForm"><div class="input-group" res-show-errors><input class="prj-form-control" type="text" name="firstName"></input></div></form>')($scope);
+          }).not.toThrow();
+        });
+        return it('should throw error if class is not found', function() {
+          return expect(function() {
+            return $compile('<form name="userForm"><div class="input-group" res-show-errors><input class="form-control" type="text" name="firstName"></input></div></form>')($scope);
+          }).toThrow("show-errors element has no child input elements with a 'name' attribute and a 'prj-form-control' class");
+        });
+      });
+      return describe('and options are given', function() {
+        it('should throw exceptions if override dosent match class names', function() {
+          return expect(function() {
+            return $compile('<form name="userForm"><div class="input-group" res-show-errors="{formControlClass: \'blah-blah\'}"><input class="form-control" type="text" name="firstName"></input></div></form>')($scope);
+          }).toThrow("show-errors element has no child input elements with a 'name' attribute and a 'blah-blah' class");
+        });
+        return it('should find the name if given override', function() {
+          return expect(function() {
+            return $compile('<form name="userForm"><div class="input-group" res-show-errors="{formControlClass: \'blah-blah\'}"><input class="blah-blah" type="text" name="firstName"></input></div></form>')($scope);
+          }).not.toThrow();
         });
       });
     });

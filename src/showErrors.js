@@ -5,7 +5,7 @@
 
   showErrorsModule.directive('resShowErrors', [
     '$timeout', 'resShowErrorsConfig', '$interpolate', function($timeout, resShowErrorsConfig, $interpolate) {
-      var getErrorClass, getShowSuccess, getTrigger, linkFn;
+      var getErrorClass, getFormControlClass, getShowSuccess, getTrigger, linkFn;
       getTrigger = function(options) {
         var trigger;
         trigger = resShowErrorsConfig.trigger;
@@ -30,18 +30,27 @@
         }
         return errorClass;
       };
+      getFormControlClass = function(options) {
+        var formControlClass;
+        formControlClass = resShowErrorsConfig.formControlClass;
+        if (options && (options.formControlClass != null)) {
+          formControlClass = options.formControlClass;
+        }
+        return formControlClass;
+      };
       linkFn = function(scope, el, attrs, formCtrl) {
-        var blurred, errorClass, inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses, trigger;
+        var blurred, errorClass, formControlClass, inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses, trigger;
         blurred = false;
         options = scope.$eval(attrs.resShowErrors);
         showSuccess = getShowSuccess(options);
         trigger = getTrigger(options);
         errorClass = getErrorClass(options);
-        inputEl = el[0].querySelector('.form-control[name]');
+        formControlClass = getFormControlClass(options);
+        inputEl = el[0].querySelector('.' + formControlClass + '[name]');
         inputNgEl = angular.element(inputEl);
         inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
         if (!inputName) {
-          throw "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class";
+          throw "show-errors element has no child input elements with a 'name' attribute and a '" + formControlClass + "' class";
         }
         inputNgEl.bind(trigger, function() {
           blurred = true;
@@ -88,11 +97,12 @@
   ]);
 
   showErrorsModule.provider('resShowErrorsConfig', function() {
-    var _errorClass, _showSuccess, _skipFormGroupCheck, _trigger;
+    var _errorClass, _formControlClass, _showSuccess, _skipFormGroupCheck, _trigger;
     _showSuccess = false;
     _trigger = 'blur';
     _errorClass = 'has-error';
     _skipFormGroupCheck = false;
+    _formControlClass = 'form-control';
     this.showSuccess = function(showSuccess) {
       return _showSuccess = showSuccess;
     };
@@ -105,12 +115,16 @@
     this.skipFormGroupCheck = function(skipFormGroupCheck) {
       return _skipFormGroupCheck = skipFormGroupCheck;
     };
+    this.formControlClass = function(clazz) {
+      return _formControlClass = clazz;
+    };
     this.$get = function() {
       return {
         showSuccess: _showSuccess,
         trigger: _trigger,
         skipFormGroupCheck: _skipFormGroupCheck,
-        errorClass: _errorClass
+        errorClass: _errorClass,
+        formControlClass: _formControlClass
       };
     };
   });

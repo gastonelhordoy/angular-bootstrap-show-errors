@@ -21,18 +21,26 @@ showErrorsModule.directive 'resShowErrors',
         errorClass = options.errorClass
       errorClass
 
+    getFormControlClass = (options) ->
+      formControlClass = resShowErrorsConfig.formControlClass
+      if options && options.formControlClass?
+        formControlClass = options.formControlClass
+      formControlClass
+
+
     linkFn = (scope, el, attrs, formCtrl) ->
       blurred = false
       options = scope.$eval attrs.resShowErrors
       showSuccess = getShowSuccess options
       trigger = getTrigger options
       errorClass = getErrorClass options
+      formControlClass = getFormControlClass options
 
-      inputEl   = el[0].querySelector '.form-control[name]'
+      inputEl   = el[0].querySelector '.' + formControlClass + '[name]'
       inputNgEl = angular.element inputEl
       inputName = $interpolate(inputNgEl.attr('name') || '')(scope)
       unless inputName
-        throw "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class"
+        throw "show-errors element has no child input elements with a 'name' attribute and a '" + formControlClass + "' class"
 
       inputNgEl.bind trigger, ->
         blurred = true
@@ -76,6 +84,7 @@ showErrorsModule.provider 'resShowErrorsConfig', ->
   _trigger = 'blur'
   _errorClass = 'has-error'
   _skipFormGroupCheck = false
+  _formControlClass = 'form-control'
 
   @showSuccess = (showSuccess) ->
     _showSuccess = showSuccess
@@ -89,10 +98,14 @@ showErrorsModule.provider 'resShowErrorsConfig', ->
   @skipFormGroupCheck = (skipFormGroupCheck) ->
     _skipFormGroupCheck = skipFormGroupCheck
 
+  @formControlClass = (clazz) ->
+    _formControlClass = clazz
+
   @$get = ->
     showSuccess: _showSuccess
     trigger: _trigger
     skipFormGroupCheck: _skipFormGroupCheck
     errorClass: _errorClass
+    formControlClass: _formControlClass
 
   return

@@ -33,6 +33,11 @@ describe 'showErrors', ->
         $compile('<form name="userFor"><div class="form-group" res-show-errors><input type="text" name="firstName"></input></div></form>')($scope)
       ).toThrow "show-errors element has no child input elements with a 'name' attribute and a 'form-control' class"
 
+  it 'directive can find \'form-control\' in nested divs', ->
+    expect( ->
+      $compile('<form name="userFor"><div class="form-group" res-show-errors><div class="wrapper-container"><input type="text" class="form-control" name="firstName"></input></div></div></form>')($scope)
+    ).not.toThrow
+
   it "throws an exception if the element doesn't have the form-group or input-group class", ->
     expect( ->
       $compile('<div res-show-errors></div>')($scope)
@@ -226,6 +231,64 @@ describe 'showErrors', ->
         $scope.$broadcast 'show-errors-reset'
         $timeout.flush()
         expectLastNameFormGroupHasSuccessClass(el).toBe false
+
+describe 'showErrorsConfig with alternate form control class', ->
+  $compile = undefined
+  $scope = undefined
+  $timeout = undefined
+  validName = 'Paul'
+  invalidName = 'Pa'
+
+  beforeEach ->
+    testModule = angular.module 'testModule', []
+    testModule.config (resShowErrorsConfigProvider) ->
+      resShowErrorsConfigProvider.formControlClass 'prj-form-control'
+
+    module 'res.showErrors', 'testModule'
+
+    inject((_$compile_, _$rootScope_, _$timeout_) ->
+      $compile = _$compile_
+      $scope = _$rootScope_
+      $timeout = _$timeout_
+    )
+
+  compileEl = ->
+    el = $compile(
+        '<form name="userForm">
+          <div id="first-name-group" class="form-group" res-show-errors="{formControlClass: \'blah\'}">
+            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />
+          </div>
+          <div id="last-name-group" class="form-group" res-show-errors>
+            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" class="form-control" />
+          </div>
+        </form>'
+      )($scope)
+    angular.element(document.body).append el
+    $scope.$digest()
+    el
+
+  describe 'when resShowErrorsConfig.formControlClass is set', ->
+    describe 'and no options are given', ->
+      it 'should not throw error', ->
+        expect( ->
+          $compile('<form name="userForm"><div class="input-group" res-show-errors><input class="prj-form-control" type="text" name="firstName"></input></div></form>')($scope)
+        ).not.toThrow()
+
+      it 'should throw error if class is not found', ->
+        expect( ->
+          $compile('<form name="userForm"><div class="input-group" res-show-errors><input class="form-control" type="text" name="firstName"></input></div></form>')($scope)
+        ).toThrow "show-errors element has no child input elements with a 'name' attribute and a 'prj-form-control' class"
+
+    describe 'and options are given', ->
+      it 'should throw exceptions if override dosent match class names', ->
+        expect( ->
+          $compile('<form name="userForm"><div class="input-group" res-show-errors="{formControlClass: \'blah-blah\'}"><input class="form-control" type="text" name="firstName"></input></div></form>')($scope)
+        ).toThrow "show-errors element has no child input elements with a 'name' attribute and a 'blah-blah' class"
+
+      it 'should find the name if given override', ->
+        expect( ->
+          $compile('<form name="userForm"><div class="input-group" res-show-errors="{formControlClass: \'blah-blah\'}"><input class="blah-blah" type="text" name="firstName"></input></div></form>')($scope)
+        ).not.toThrow()
 
 describe 'showErrorsConfig', ->
   $compile = undefined
