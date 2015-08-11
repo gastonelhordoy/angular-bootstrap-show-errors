@@ -5,7 +5,7 @@
 
   showErrorsModule.directive('resShowErrors', [
     '$timeout', 'resShowErrorsConfig', '$interpolate', function($timeout, resShowErrorsConfig, $interpolate) {
-      var getShowSuccess, getTrigger, linkFn;
+      var getErrorClass, getShowSuccess, getTrigger, linkFn;
       getTrigger = function(options) {
         var trigger;
         trigger = resShowErrorsConfig.trigger;
@@ -22,12 +22,21 @@
         }
         return showSuccess;
       };
+      getErrorClass = function(options) {
+        var errorClass;
+        errorClass = resShowErrorsConfig.errorClass;
+        if (options && (options.errorClass != null)) {
+          errorClass = options.errorClass;
+        }
+        return errorClass;
+      };
       linkFn = function(scope, el, attrs, formCtrl) {
-        var blurred, inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses, trigger;
+        var blurred, errorClass, inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses, trigger;
         blurred = false;
-        options = scope.$eval(attrs.showErrors);
+        options = scope.$eval(attrs.resShowErrors);
         showSuccess = getShowSuccess(options);
         trigger = getTrigger(options);
+        errorClass = getErrorClass(options);
         inputEl = el[0].querySelector('.form-control[name]');
         inputNgEl = angular.element(inputEl);
         inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
@@ -51,13 +60,13 @@
         });
         scope.$on('show-errors-reset', function() {
           return $timeout(function() {
-            el.removeClass('has-error');
+            el.removeClass(errorClass);
             el.removeClass('has-success');
             return blurred = false;
           }, 0, false);
         });
         return toggleClasses = function(invalid) {
-          el.toggleClass('has-error', invalid);
+          el.toggleClass(errorClass, invalid);
           if (showSuccess) {
             return el.toggleClass('has-success', !invalid);
           }

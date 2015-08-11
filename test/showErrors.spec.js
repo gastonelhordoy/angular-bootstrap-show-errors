@@ -291,7 +291,8 @@
       testModule = angular.module('testModule', []);
       testModule.config(function(resShowErrorsConfigProvider) {
         resShowErrorsConfigProvider.showSuccess(true);
-        return resShowErrorsConfigProvider.trigger('keypress');
+        resShowErrorsConfigProvider.trigger('keypress');
+        return resShowErrorsConfigProvider.errorClass('res-val-error');
       });
       module('res.showErrors', 'testModule');
       return inject(function(_$compile_, _$rootScope_, _$timeout_) {
@@ -326,6 +327,18 @@
         });
       });
     });
+    describe('when showErrorsConfig.errorClass is "res-val-error"', function() {
+      return describe('and no options given', function() {
+        return it('"res-val-error" class is applied', function() {
+          var el;
+          el = compileEl();
+          $scope.userForm.lastName.$setViewValue(invalidName);
+          angular.element(lastNameEl(el)).triggerHandler('keypress');
+          $scope.$digest();
+          return expectLastNameFormGroupHasErrorClass(el, 'res-val-error').toBe(true);
+        });
+      });
+    });
     describe('when showErrorsConfig.showSuccess is true', function() {
       return describe('but options.showSuccess is false', function() {
         return it('show-success class is not applied', function() {
@@ -346,7 +359,7 @@
           $scope.userForm.lastName.$setViewValue(invalidName);
           angular.element(lastNameEl(el)).triggerHandler('keypress');
           $scope.$digest();
-          return expectLastNameFormGroupHasErrorClass(el).toBe(true);
+          return expectLastNameFormGroupHasErrorClass(el, 'res-val-error').toBe(true);
         });
       });
       return describe('but options.trigger is "blur"', function() {
@@ -356,7 +369,7 @@
           $scope.userForm.firstName.$setViewValue(invalidName);
           angular.element(firstNameEl(el)).triggerHandler('keypress');
           $scope.$digest();
-          return expectFirstNameFormGroupHasErrorClass(el).toBe(false);
+          return expectFirstNameFormGroupHasErrorClass(el, 'res-val-error').toBe(false);
         });
       });
     });
@@ -374,10 +387,14 @@
     return find(el, '[name=lastName]');
   };
 
-  expectFormGroupHasErrorClass = function(el) {
-    var formGroup;
+  expectFormGroupHasErrorClass = function(el, errorClass) {
+    var formGroup, _errorClass;
+    _errorClass = 'has-error';
+    if (errorClass != null) {
+      _errorClass = errorClass;
+    }
     formGroup = el[0].querySelector('[id=first-name-group]');
-    return expect(angular.element(formGroup).hasClass('has-error'));
+    return expect(angular.element(formGroup).hasClass(_errorClass));
   };
 
   expectFirstNameFormGroupHasSuccessClass = function(el) {
@@ -392,16 +409,24 @@
     return expect(angular.element(formGroup).hasClass('has-success'));
   };
 
-  expectFirstNameFormGroupHasErrorClass = function(el) {
-    var formGroup;
+  expectFirstNameFormGroupHasErrorClass = function(el, errorClass) {
+    var formGroup, _errorClass;
+    _errorClass = 'has-error';
+    if (errorClass != null) {
+      _errorClass = errorClass;
+    }
     formGroup = el[0].querySelector('[id=first-name-group]');
-    return expect(angular.element(formGroup).hasClass('has-error'));
+    return expect(angular.element(formGroup).hasClass(_errorClass));
   };
 
-  expectLastNameFormGroupHasErrorClass = function(el) {
-    var formGroup;
+  expectLastNameFormGroupHasErrorClass = function(el, errorClass) {
+    var formGroup, _errorClass;
+    _errorClass = 'has-error';
+    if (errorClass != null) {
+      _errorClass = errorClass;
+    }
     formGroup = el[0].querySelector('[id=last-name-group]');
-    return expect(angular.element(formGroup).hasClass('has-error'));
+    return expect(angular.element(formGroup).hasClass(_errorClass));
   };
 
 }).call(this);

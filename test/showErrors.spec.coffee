@@ -239,6 +239,7 @@ describe 'showErrorsConfig', ->
     testModule.config (resShowErrorsConfigProvider) ->
       resShowErrorsConfigProvider.showSuccess true
       resShowErrorsConfigProvider.trigger 'keypress'
+      resShowErrorsConfigProvider.errorClass 'res-val-error'
 
     module 'res.showErrors', 'testModule'
 
@@ -272,6 +273,15 @@ describe 'showErrorsConfig', ->
         $scope.$digest()
         expectLastNameFormGroupHasSuccessClass(el).toBe true
 
+  describe 'when showErrorsConfig.errorClass is "res-val-error"', ->
+    describe 'and no options given', ->
+      it '"res-val-error" class is applied', ->
+        el = compileEl()
+        $scope.userForm.lastName.$setViewValue invalidName
+        angular.element(lastNameEl(el)).triggerHandler 'keypress'
+        $scope.$digest()
+        expectLastNameFormGroupHasErrorClass(el, 'res-val-error').toBe true
+
   describe 'when showErrorsConfig.showSuccess is true', ->
     describe 'but options.showSuccess is false', ->
       it 'show-success class is not applied', ->
@@ -288,7 +298,7 @@ describe 'showErrorsConfig', ->
         $scope.userForm.lastName.$setViewValue invalidName
         angular.element(lastNameEl(el)).triggerHandler 'keypress'
         $scope.$digest()
-        expectLastNameFormGroupHasErrorClass(el).toBe true
+        expectLastNameFormGroupHasErrorClass(el, 'res-val-error').toBe true
 
     describe 'but options.trigger is "blur"', ->
       it 'does not validate the value on keypress', ->
@@ -296,7 +306,7 @@ describe 'showErrorsConfig', ->
         $scope.userForm.firstName.$setViewValue invalidName
         angular.element(firstNameEl(el)).triggerHandler 'keypress'
         $scope.$digest()
-        expectFirstNameFormGroupHasErrorClass(el).toBe false
+        expectFirstNameFormGroupHasErrorClass(el, 'res-val-error').toBe false
 
 find = (el, selector) ->
   el[0].querySelector selector
@@ -307,9 +317,12 @@ firstNameEl = (el) ->
 lastNameEl = (el) ->
   find el, '[name=lastName]'
 
-expectFormGroupHasErrorClass = (el) ->
+expectFormGroupHasErrorClass = (el, errorClass) ->
+  _errorClass = 'has-error'
+  if errorClass?
+    _errorClass = errorClass
   formGroup = el[0].querySelector '[id=first-name-group]'
-  expect angular.element(formGroup).hasClass('has-error')
+  expect angular.element(formGroup).hasClass(_errorClass)
 
 expectFirstNameFormGroupHasSuccessClass = (el) ->
   formGroup = el[0].querySelector '[id=first-name-group]'
@@ -319,10 +332,16 @@ expectLastNameFormGroupHasSuccessClass = (el) ->
   formGroup = el[0].querySelector '[id=last-name-group]'
   expect angular.element(formGroup).hasClass('has-success')
 
-expectFirstNameFormGroupHasErrorClass = (el) ->
+expectFirstNameFormGroupHasErrorClass = (el, errorClass) ->
+  _errorClass = 'has-error'
+  if errorClass?
+    _errorClass = errorClass
   formGroup = el[0].querySelector '[id=first-name-group]'
-  expect angular.element(formGroup).hasClass('has-error')
+  expect angular.element(formGroup).hasClass(_errorClass)
 
-expectLastNameFormGroupHasErrorClass = (el) ->
+expectLastNameFormGroupHasErrorClass = (el, errorClass) ->
+  _errorClass = 'has-error'
+  if errorClass?
+    _errorClass = errorClass
   formGroup = el[0].querySelector '[id=last-name-group]'
-  expect angular.element(formGroup).hasClass('has-error')
+  expect angular.element(formGroup).hasClass(_errorClass)

@@ -15,11 +15,18 @@ showErrorsModule.directive 'resShowErrors',
         showSuccess = options.showSuccess
       showSuccess
 
+    getErrorClass = (options) ->
+      errorClass = resShowErrorsConfig.errorClass
+      if options && options.errorClass?
+        errorClass = options.errorClass
+      errorClass
+
     linkFn = (scope, el, attrs, formCtrl) ->
       blurred = false
-      options = scope.$eval attrs.showErrors
+      options = scope.$eval attrs.resShowErrors
       showSuccess = getShowSuccess options
       trigger = getTrigger options
+      errorClass = getErrorClass options
 
       inputEl   = el[0].querySelector '.form-control[name]'
       inputNgEl = angular.element inputEl
@@ -43,13 +50,13 @@ showErrorsModule.directive 'resShowErrors',
       scope.$on 'show-errors-reset', ->
         $timeout ->
           # want to run this after the current digest cycle
-          el.removeClass 'has-error'
+          el.removeClass errorClass
           el.removeClass 'has-success'
           blurred = false
         , 0, false
 
       toggleClasses = (invalid) ->
-        el.toggleClass 'has-error', invalid
+        el.toggleClass errorClass, invalid
         if showSuccess
           el.toggleClass 'has-success', !invalid
 
