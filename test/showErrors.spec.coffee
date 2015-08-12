@@ -243,6 +243,7 @@ describe 'showErrorsConfig with alternate form control class', ->
     testModule = angular.module 'testModule', []
     testModule.config (resShowErrorsConfigProvider) ->
       resShowErrorsConfigProvider.formControlClass 'prj-form-control'
+      resShowErrorsConfigProvider.skipFormGroupCheck true
 
     module 'res.showErrors', 'testModule'
 
@@ -251,21 +252,6 @@ describe 'showErrorsConfig with alternate form control class', ->
       $scope = _$rootScope_
       $timeout = _$timeout_
     )
-
-  compileEl = ->
-    el = $compile(
-        '<form name="userForm">
-          <div id="first-name-group" class="form-group" res-show-errors="{formControlClass: \'blah\'}">
-            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />
-          </div>
-          <div id="last-name-group" class="form-group" res-show-errors>
-            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" class="form-control" />
-          </div>
-        </form>'
-      )($scope)
-    angular.element(document.body).append el
-    $scope.$digest()
-    el
 
   describe 'when resShowErrorsConfig.formControlClass is set', ->
     describe 'and no options are given', ->
@@ -289,6 +275,18 @@ describe 'showErrorsConfig with alternate form control class', ->
         expect( ->
           $compile('<form name="userForm"><div class="input-group" res-show-errors="{formControlClass: \'blah-blah\'}"><input class="blah-blah" type="text" name="firstName"></input></div></form>')($scope)
         ).not.toThrow()
+  describe 'when resShowErrorsConfig.skipFormGroupCheck is set', ->
+    describe 'and no options are given', ->
+      it 'should not throw an error', ->
+          expect( ->
+            $compile('<form name="userForm"><div res-show-errors><input class="prj-form-control" type="text" name="firstName"></input></div></form>')($scope)
+          ).not.toThrow()
+    describe 'and options are given', ->
+      # TODO: local options don't override the skip check to false because the compile time check of this property only checks that it exists, not weither it's true or false. 
+      xit 'should throw an error', ->
+          expect( ->
+            $compile('<form name="userForm"><div res-show-errors="{skipFormGroupCheck: \'false\'}"><input class="prj-form-control" type="text" name="firstName"></input></div></form>')($scope)
+          ).toThrow()
 
 describe 'showErrorsConfig', ->
   $compile = undefined

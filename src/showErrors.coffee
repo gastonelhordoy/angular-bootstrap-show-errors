@@ -27,6 +27,12 @@ showErrorsModule.directive 'resShowErrors',
         formControlClass = options.formControlClass
       formControlClass
 
+    getSkipFormGroupCheck = (options) ->
+      skipFormGroupCheck = resShowErrorsConfig.skipFormGroupCheck
+      if options.indexOf('skipFormGroupCheck') != -1
+        skipFormGroupCheck = true
+      skipFormGroupCheck
+
 
     linkFn = (scope, el, attrs, formCtrl) ->
       blurred = false
@@ -72,7 +78,8 @@ showErrorsModule.directive 'resShowErrors',
       restrict: 'A'
       require: '^form'
       compile: (elem, attrs) ->
-        if attrs['resShowErrors'].indexOf('skipFormGroupCheck') == -1
+        _skipFormGroupCheck = getSkipFormGroupCheck attrs['resShowErrors']
+        if !_skipFormGroupCheck
           unless elem.hasClass('form-group') or elem.hasClass('input-group')
             throw "show-errors element does not have the 'form-group' or 'input-group' class"
         linkFn

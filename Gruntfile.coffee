@@ -36,3 +36,4 @@ module.exports = (grunt) ->
   require('matchdep').filterDev('grunt-*').forEach(grunt.loadNpmTasks)
 
   grunt.registerTask 'default', ['coffee', 'uglify', 'karma:unit']
+  grunt.registerTask 'auto', ['karma:continuous:start', 'watch']

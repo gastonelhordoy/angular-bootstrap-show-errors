@@ -61,7 +61,7 @@ To force the validity check, broadcast the `show-errors-check-validity` event.
 ```javascript
 $scope.save = function() {
   $scope.$broadcast('show-errors-check-validity');
-  
+
   if ($scope.userForm.$valid) {
     // save the user
   }
@@ -91,7 +91,7 @@ $scope.reset = function() {
 
 Show Valid Entries
 ---
-It's also possible to let the user know when they have entered valid values by applying the 'show-success' class that Bootstrap provides. 
+It's also possible to let the user know when they have entered valid values by applying the 'show-success' class that Bootstrap provides.
 You can either apply this globally or on an element by element basis.
 
 ##### Globally
@@ -129,8 +129,8 @@ If your HTML code doesn't have a form-group class, the form group check can be s
 
 Custom Trigger
 ---
-By default, the validation is not performed until the `blur` event is trigger on the input 
-element. However, there are some scenarios where this is not desirable, so it's possible to 
+By default, the validation is not performed until the `blur` event is trigger on the input
+element. However, there are some scenarios where this is not desirable, so it's possible to
 override this with the `trigger` option.
 
 ##### By Input Element
@@ -144,12 +144,38 @@ override this with the `trigger` option.
 
 ##### Globally
 ```javascript
-app = angular.module('yourApp', ['ui.bootstrap.showErrors']);
+app = angular.module('yourApp', ['res.showErrors']);
 app.config(['showErrorsConfigProvider', function(showErrorsConfigProvider) {
   showErrorsConfigProvider.trigger('keypress');
 }]);
 ```
-    
+
+## Global options
+
+#### Override errorClass
+```javascript
+app = angular.module('yourApp', ['res.showErrors']);
+app.config(['resShowErrorsConfigProvider', function(resShowErrorsConfigProvider) {
+  resShowErrorsConfigProvider.errorClass('custom-show-error');
+}]);
+```
+
+#### Override skipFormGroupChcek
+```javascript
+app = angular.module('yourApp', ['res.showErrors']);
+app.config(['resShowErrorsConfigProvider', function(resShowErrorsConfigProvider) {
+  resShowErrorsConfigProvider.skipFormGroupChcek(true);
+}]);
+```
+
+#### Override formControlClass
+```javascript
+app = angular.module('yourApp', ['res.showErrors']);
+app.config(['resShowErrorsConfigProvider', function(resShowErrorsConfigProvider) {
+  resShowErrorsConfigProvider.formControlClass('custom-form-control');
+}]);
+```
+
 ## Development
 
 ### Install Development Dependencies
@@ -163,7 +189,7 @@ bower install
 ### Compile and Run the Unit Tests
 Just type `grunt` in the command line to compile and run the karma unit tests once.
 
-If you want to have grunt watch for any file changes and automatically compile and run the karma 
+If you want to have grunt watch for any file changes and automatically compile and run the karma
 unit tests, then run the following command:
 ```
 grunt karma:continuous:start watch

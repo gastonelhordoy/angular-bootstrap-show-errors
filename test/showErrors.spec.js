@@ -285,7 +285,7 @@
   });
 
   describe('showErrorsConfig with alternate form control class', function() {
-    var $compile, $scope, $timeout, compileEl, invalidName, validName;
+    var $compile, $scope, $timeout, invalidName, validName;
     $compile = void 0;
     $scope = void 0;
     $timeout = void 0;
@@ -295,7 +295,8 @@
       var testModule;
       testModule = angular.module('testModule', []);
       testModule.config(function(resShowErrorsConfigProvider) {
-        return resShowErrorsConfigProvider.formControlClass('prj-form-control');
+        resShowErrorsConfigProvider.formControlClass('prj-form-control');
+        return resShowErrorsConfigProvider.skipFormGroupCheck(true);
       });
       module('res.showErrors', 'testModule');
       return inject(function(_$compile_, _$rootScope_, _$timeout_) {
@@ -304,21 +305,7 @@
         return $timeout = _$timeout_;
       });
     });
-    compileEl = function() {
-      var el;
-      el = $compile('<form name="userForm">\
-          <div id="first-name-group" class="form-group" res-show-errors="{formControlClass: \'blah\'}">\
-            <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />\
-          </div>\
-          <div id="last-name-group" class="form-group" res-show-errors>\
-            <input type="text" name="lastName" ng-model="lastName" ng-minlength="3" class="form-control" />\
-          </div>\
-        </form>')($scope);
-      angular.element(document.body).append(el);
-      $scope.$digest();
-      return el;
-    };
-    return describe('when resShowErrorsConfig.formControlClass is set', function() {
+    describe('when resShowErrorsConfig.formControlClass is set', function() {
       describe('and no options are given', function() {
         it('should not throw error', function() {
           return expect(function() {
@@ -341,6 +328,22 @@
           return expect(function() {
             return $compile('<form name="userForm"><div class="input-group" res-show-errors="{formControlClass: \'blah-blah\'}"><input class="blah-blah" type="text" name="firstName"></input></div></form>')($scope);
           }).not.toThrow();
+        });
+      });
+    });
+    return describe('when resShowErrorsConfig.skipFormGroupCheck is set', function() {
+      describe('and no options are given', function() {
+        return it('should not throw an error', function() {
+          return expect(function() {
+            return $compile('<form name="userForm"><div res-show-errors><input class="prj-form-control" type="text" name="firstName"></input></div></form>')($scope);
+          }).not.toThrow();
+        });
+      });
+      return describe('and options are given', function() {
+        return xit('should throw an error', function() {
+          return expect(function() {
+            return $compile('<form name="userForm"><div res-show-errors="{skipFormGroupCheck: \'false\'}"><input class="prj-form-control" type="text" name="firstName"></input></div></form>')($scope);
+          }).toThrow();
         });
       });
     });

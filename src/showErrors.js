@@ -5,7 +5,7 @@
 
   showErrorsModule.directive('resShowErrors', [
     '$timeout', 'resShowErrorsConfig', '$interpolate', function($timeout, resShowErrorsConfig, $interpolate) {
-      var getErrorClass, getFormControlClass, getShowSuccess, getTrigger, linkFn;
+      var getErrorClass, getFormControlClass, getShowSuccess, getSkipFormGroupCheck, getTrigger, linkFn;
       getTrigger = function(options) {
         var trigger;
         trigger = resShowErrorsConfig.trigger;
@@ -37,6 +37,14 @@
           formControlClass = options.formControlClass;
         }
         return formControlClass;
+      };
+      getSkipFormGroupCheck = function(options) {
+        var skipFormGroupCheck;
+        skipFormGroupCheck = resShowErrorsConfig.skipFormGroupCheck;
+        if (options.indexOf('skipFormGroupCheck') !== -1) {
+          skipFormGroupCheck = true;
+        }
+        return skipFormGroupCheck;
       };
       linkFn = function(scope, el, attrs, formCtrl) {
         var blurred, errorClass, formControlClass, inputEl, inputName, inputNgEl, options, showSuccess, toggleClasses, trigger;
@@ -85,7 +93,9 @@
         restrict: 'A',
         require: '^form',
         compile: function(elem, attrs) {
-          if (attrs['resShowErrors'].indexOf('skipFormGroupCheck') === -1) {
+          var _skipFormGroupCheck;
+          _skipFormGroupCheck = getSkipFormGroupCheck(attrs['resShowErrors']);
+          if (!_skipFormGroupCheck) {
             if (!(elem.hasClass('form-group') || elem.hasClass('input-group'))) {
               throw "show-errors element does not have the 'form-group' or 'input-group' class";
             }
