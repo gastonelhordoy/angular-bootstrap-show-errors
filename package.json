@@ -23,6 +23,7 @@
   },
   "scripts": {
     "test": "grunt --verbose",
-    "watch": "grunt karma:continuous:start watch"
+    "watch": "grunt karma:continuous:start watch",
+    "version": "grunt"
   }
 }

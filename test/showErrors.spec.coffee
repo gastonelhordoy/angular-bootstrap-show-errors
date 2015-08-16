@@ -183,6 +183,22 @@ describe 'showErrors', ->
       $timeout.flush()
       expectFormGroupHasErrorClass(el).toBe false
 
+  describe 'form input has dynamic name', ->
+    it 'should get name correctly', ->
+      $scope.uniqueId = 0
+      el = $compile(
+          '<form name="userForm">
+            <div id="first-name-group" class="form-group" res-show-errors>
+              <input type="text" name="firstName_{{uniqueId}}" ng-model="firstName" ng-minlength="3" class="form-control" />
+            </div>
+          </form>'
+        )($scope)
+      $scope.uniqueId = 5
+      # $scope.$digest()
+      angular.element(find(el, '[name=firstName_5]')).triggerHandler 'blur'
+      formGroup = el[0].querySelector '[id=first-name-group]'
+      expect angular.element(formGroup).hasClass('show-errors')
+
   describe '{showSuccess: true} option', ->
     describe '$pristine && $valid', ->
       it 'has-success is absent', ->
@@ -282,7 +298,7 @@ describe 'showErrorsConfig with alternate form control class', ->
             $compile('<form name="userForm"><div res-show-errors><input class="prj-form-control" type="text" name="firstName"></input></div></form>')($scope)
           ).not.toThrow()
     describe 'and options are given', ->
-      # TODO: local options don't override the skip check to false because the compile time check of this property only checks that it exists, not weither it's true or false. 
+      # TODO: local options don't override the skip check to false because the compile time check of this property only checks that it exists, not weither it's true or false.
       xit 'should throw an error', ->
           expect( ->
             $compile('<form name="userForm"><div res-show-errors="{skipFormGroupCheck: \'false\'}"><input class="prj-form-control" type="text" name="firstName"></input></div></form>')($scope)

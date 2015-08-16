@@ -218,6 +218,21 @@
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
+    describe('form input has dynamic name', function() {
+      return it('should get name correctly', function() {
+        var el, formGroup;
+        $scope.uniqueId = 0;
+        el = $compile('<form name="userForm">\
+            <div id="first-name-group" class="form-group" res-show-errors>\
+              <input type="text" name="firstName_{{uniqueId}}" ng-model="firstName" ng-minlength="3" class="form-control" />\
+            </div>\
+          </form>')($scope);
+        $scope.uniqueId = 5;
+        angular.element(find(el, '[name=firstName_5]')).triggerHandler('blur');
+        formGroup = el[0].querySelector('[id=first-name-group]');
+        return expect(angular.element(formGroup).hasClass('show-errors'));
+      });
+    });
     return describe('{showSuccess: true} option', function() {
       describe('$pristine && $valid', function() {
         return it('has-success is absent', function() {

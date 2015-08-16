@@ -44,12 +44,14 @@ showErrorsModule.directive 'resShowErrors',
 
       inputEl   = el[0].querySelector '.' + formControlClass + '[name]'
       inputNgEl = angular.element inputEl
-      inputName = $interpolate(inputNgEl.attr('name') || '')(scope)
+      inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
+
       unless inputName
         throw "show-errors element has no child input elements with a 'name' attribute and a '" + formControlClass + "' class"
 
       inputNgEl.bind trigger, ->
         blurred = true
+        inputName = $interpolate(inputNgEl.attr('name') || '')(scope)
         toggleClasses formCtrl[inputName].$invalid
 
       scope.$watch ->

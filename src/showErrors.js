@@ -62,6 +62,7 @@
         }
         inputNgEl.bind(trigger, function() {
           blurred = true;
+          inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
           return toggleClasses(formCtrl[inputName].$invalid);
         });
         scope.$watch(function() {
