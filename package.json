@@ -24,6 +24,6 @@
   "scripts": {
     "test": "grunt --verbose",
     "watch": "grunt karma:continuous:start watch",
-    "version": "grunt"
+    "version": "grunt && git add src/showErrors.min.js"
   }
 }
