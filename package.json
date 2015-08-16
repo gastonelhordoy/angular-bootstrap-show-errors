@@ -23,7 +23,7 @@
   },
   "scripts": {
     "test": "grunt --verbose",
-    "watch": "grunt karma:continuous:start watch",
-    "version": "grunt && git add src"
+    "auto": "grunt karma:continuous:start watch",
+    "preversion": "grunt && git add src"
   }
 }
