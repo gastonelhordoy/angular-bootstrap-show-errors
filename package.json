@@ -24,6 +24,6 @@
   "scripts": {
     "test": "grunt --verbose",
     "auto": "grunt karma:continuous:start watch",
-    "version": "grunt && git add src"
+    "version": "grunt && git add -A src"
   }
 }
