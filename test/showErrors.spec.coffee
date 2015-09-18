@@ -183,21 +183,36 @@ describe 'showErrors', ->
       $timeout.flush()
       expectFormGroupHasErrorClass(el).toBe false
 
-  describe 'form input has dynamic name', ->
+  describe 'form input with dynamic name', ->
     it 'should get name correctly', ->
       $scope.uniqueId = 0
       el = $compile(
           '<form name="userForm">
             <div id="first-name-group" class="form-group" res-show-errors>
-              <input type="text" name="firstName_{{uniqueId}}" ng-model="firstName" ng-minlength="3" class="form-control" />
+              <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />
             </div>
           </form>'
         )($scope)
       $scope.uniqueId = 5
-      # $scope.$digest()
-      angular.element(find(el, '[name=firstName_5]')).triggerHandler 'blur'
+      angular.element(find(el, '[name=firstName]')).triggerHandler 'blur'
       formGroup = el[0].querySelector '[id=first-name-group]'
       expect angular.element(formGroup).hasClass('show-errors')
+
+    it 'should show errors when broadcasting check validity', ->
+      $scope.uniqueId = 0
+      el = $compile(
+          '<form name="userForm">
+            <div id="first-name-group" class="form-group" res-show-errors>
+              <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />
+            </div>
+          </form>'
+        )($scope)
+      $scope.uniqueId = 0
+      $scope.$digest()
+      $scope.userForm['firstName'].$setViewValue invalidName
+      $scope.$broadcast 'show-errors-check-validity'
+      angular.element(find(el, '[name=firstName]')).triggerHandler 'blur'
+      expectFormGroupHasErrorClass(el).toBe true
 
   describe '{showSuccess: true} option', ->
     describe '$pristine && $valid', ->

@@ -61,7 +61,9 @@ showErrorsModule.directive 'resShowErrors',
         toggleClasses invalid
 
       scope.$on 'show-errors-check-validity', ->
+        inputName = $interpolate(inputNgEl.attr('name') || '')(scope)
         toggleClasses formCtrl[inputName].$invalid
+        blurred = true
 
       scope.$on 'show-errors-reset', ->
         $timeout ->

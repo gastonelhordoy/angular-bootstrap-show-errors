@@ -218,19 +218,34 @@
         return expectFormGroupHasErrorClass(el).toBe(false);
       });
     });
-    describe('form input has dynamic name', function() {
-      return it('should get name correctly', function() {
+    describe('form input with dynamic name', function() {
+      it('should get name correctly', function() {
         var el, formGroup;
         $scope.uniqueId = 0;
         el = $compile('<form name="userForm">\
             <div id="first-name-group" class="form-group" res-show-errors>\
-              <input type="text" name="firstName_{{uniqueId}}" ng-model="firstName" ng-minlength="3" class="form-control" />\
+              <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />\
             </div>\
           </form>')($scope);
         $scope.uniqueId = 5;
-        angular.element(find(el, '[name=firstName_5]')).triggerHandler('blur');
+        angular.element(find(el, '[name=firstName]')).triggerHandler('blur');
         formGroup = el[0].querySelector('[id=first-name-group]');
         return expect(angular.element(formGroup).hasClass('show-errors'));
+      });
+      return it('should show errors when broadcasting check validity', function() {
+        var el;
+        $scope.uniqueId = 0;
+        el = $compile('<form name="userForm">\
+            <div id="first-name-group" class="form-group" res-show-errors>\
+              <input type="text" name="firstName" ng-model="firstName" ng-minlength="3" class="form-control" />\
+            </div>\
+          </form>')($scope);
+        $scope.uniqueId = 0;
+        $scope.$digest();
+        $scope.userForm['firstName'].$setViewValue(invalidName);
+        $scope.$broadcast('show-errors-check-validity');
+        angular.element(find(el, '[name=firstName]')).triggerHandler('blur');
+        return expectFormGroupHasErrorClass(el).toBe(true);
       });
     });
     return describe('{showSuccess: true} option', function() {
