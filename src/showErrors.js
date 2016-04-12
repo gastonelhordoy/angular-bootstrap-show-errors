@@ -73,10 +73,11 @@
           }
           return toggleClasses(invalid);
         });
-        scope.$on('show-errors-check-validity', function() {
-          inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
-          toggleClasses(formCtrl[inputName].$invalid);
-          return blurred = true;
+        scope.$on('show-errors-check-validity', function(event, name) {
+          if (angular.isUndefined(name) || formCtrl['$name'] === name) {
+            toggleClasses(formCtrl[inputName].$invalid);
+            return blurred = true;
+          }
         });
         scope.$on('show-errors-reset', function() {
           return $timeout(function() {
