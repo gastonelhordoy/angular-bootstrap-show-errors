@@ -1,7 +1,7 @@
 showErrorsModule = angular.module('res.showErrors', [])
 
 showErrorsModule.directive 'resShowErrors',
-['$timeout', 'resShowErrorsConfig', '$interpolate', ($timeout, resShowErrorsConfig, $interpolate) ->
+['$log', '$timeout', 'resShowErrorsConfig', '$interpolate', ($log, $timeout, resShowErrorsConfig, $interpolate) ->
 
     getTrigger = (options) ->
       trigger = resShowErrorsConfig.trigger
@@ -47,7 +47,7 @@ showErrorsModule.directive 'resShowErrors',
       inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
 
       unless inputName
-        throw "show-errors element has no child input elements with a 'name' attribute and a '" + formControlClass + "' class"
+        $log.warn "show-errors element has no child input elements with a 'name' attribute and a '" + formControlClass + "' class"
 
       inputNgEl.bind trigger, ->
         blurred = true
