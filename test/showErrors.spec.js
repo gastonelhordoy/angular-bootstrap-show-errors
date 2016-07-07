@@ -179,6 +179,22 @@
         return expectFormGroupHasErrorClass(el).toBe(true);
       });
     });
+    describe('showErrorsCheckValidity with form name', function() {
+      it('correctly applies when form name matches', function() {
+        var el;
+        el = compileEl();
+        $scope.userForm.firstName.$setViewValue(invalidName);
+        $scope.$broadcast('show-errors-check-validity', 'userForm');
+        return expectFormGroupHasErrorClass(el).toBe(true);
+      });
+      return it('correctly skips when form name differs', function() {
+        var el;
+        el = compileEl();
+        $scope.userForm.firstName.$setViewValue(invalidName);
+        $scope.$broadcast('show-errors-check-validity', 'differentForm');
+        return expectFormGroupHasErrorClass(el).toBe(false);
+      });
+    });
     describe('showErrorsReset', function() {
       return it('removes has-error', function() {
         var el;
