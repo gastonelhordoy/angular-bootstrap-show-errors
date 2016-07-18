@@ -62,6 +62,7 @@ showErrorsModule.directive 'resShowErrors',
 
       scope.$on 'show-errors-check-validity', (event, name) ->
         if angular.isUndefined(name) || formCtrl['$name'] == name
+          inputName = $interpolate(inputNgEl.attr('name') || '')(scope)
           toggleClasses formCtrl[inputName].$invalid
           blurred = true
 

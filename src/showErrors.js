@@ -75,6 +75,7 @@
         });
         scope.$on('show-errors-check-validity', function(event, name) {
           if (angular.isUndefined(name) || formCtrl['$name'] === name) {
+            inputName = $interpolate(inputNgEl.attr('name') || '')(scope);
             toggleClasses(formCtrl[inputName].$invalid);
             return blurred = true;
           }
